@@ -1,0 +1,21 @@
+.price-value .plus, .price-value .minus {
+    cursor: pointer;
+    font-size: 20px;
+    vertical-align: middle;
+}
+.price-value .plus {
+    padding-left: .5rem;
+}
+.price-value .minus {
+    padding-right: .5rem;
+}
+
+.price-value .current-percent {
+    color: green;
+    font-size: .8rem;
+}
+.price-value .current-percent.minus {
+}
+.price-value .current-percent.plus {
+    text-align: right;
+}

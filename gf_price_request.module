@@ -19,20 +19,45 @@ function gf_price_request_get_current_price($node) {
 function gf_price_request_node_view($node, $view_mode) {
   if ($view_mode == 'full' && uc_product_is_product($node->type)) {
     $form = drupal_get_form('gf_price_request_change_form', $node);
-    $node->content['price_with_request_form'] = $form;
+    $node->content['gf_price_request_form'] = $form;
   }
 }
 
 function gf_price_request_change_form($form, &$form_state, $node) {
   $form['#node'] = $node;
-  $form['new_price'] = ['#type' => 'hidden', '#value' => ''];
+  $form['#attributes']['class'][] = 'gf_price_request_form';
+
+  $form['gf_price_request_price'] = [
+    '#prefix' => '<div class="current-percent"></div><span class="gf-price-request minus">◄</span>',
+    '#suffix' => '<span class="gf-price-request plus">►</span>',
+    '#markup' => '<span class="price-box">' . gf_price_request_get_current_price($node) . '</span>',
+  ];
+  // $form['gf_price_request_new_price'] = ['#type' => 'hidden', '#value' => ''];
+  // $form['gf_price_request_percent'] = ['#type' => 'hidden', '#value' => ''];
+  $form['gf_price_request_new_price'] = ['#type' => 'textfield', '#default_value' => ''];
+  $form['gf_price_request_new_price']['#attributes']['class'][] = 'd-none';
+  $form['gf_price_request_percent'] = ['#type' => 'textfield', '#default_value' => ''];
+  $form['gf_price_request_percent']['#attributes']['class'][] = 'd-none';
+
   $form['submit'] = [
     '#type' => 'submit',
     '#value' => t('Ok'),
+    '#attributes' => [
+      'class' => [
+        'd-none',
+        'new-price-submit-button'
+      ],
+    ],
   ];
+
+  $path = drupal_get_path('module', 'gf_price_request');
+  $form['#attached']['css'][] = $path . '/gf_price_request.css';
+	$form['#attached']['js'][] = $path . '/gf_price_request.js';
+
   return $form;
 }
 
 function gf_price_request_change_form_submit($form, &$form_state) {
-  // dsm($form_state);
+  // dsm($form);
+  dsm($form_state);
 }
