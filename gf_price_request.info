@@ -1,0 +1,7 @@
+name = GF Price Request
+description = Request to change wholesale prices for products.
+core = 7.x
+php = 7.0
+
+dependencies[] = gf_stock
+dependencies[] = uc_product

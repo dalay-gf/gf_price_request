@@ -1,0 +1,38 @@
+<?php
+
+function gf_price_request_get_current_price($node) {
+  $region = gf_stock_get_current_region();
+  return (int) $node->gf_region_prices[$region];
+}
+
+/**
+ * Implements hook_preprocess_node()
+ */
+// function gf_price_request_preprocess_node(&$vars) {
+//   $node = $vars['node'];
+
+//   if (uc_product_is_product($node)) {
+//     $vars['price_with_request'] = gf_price_request_change_form($node);
+//   }
+// }
+
+function gf_price_request_node_view($node, $view_mode) {
+  if ($view_mode == 'full' && uc_product_is_product($node->type)) {
+    $form = drupal_get_form('gf_price_request_change_form', $node);
+    $node->content['price_with_request_form'] = $form;
+  }
+}
+
+function gf_price_request_change_form($form, &$form_state, $node) {
+  $form['#node'] = $node;
+  $form['new_price'] = ['#type' => 'hidden', '#value' => ''];
+  $form['submit'] = [
+    '#type' => 'submit',
+    '#value' => t('Ok'),
+  ];
+  return $form;
+}
+
+function gf_price_request_change_form_submit($form, &$form_state) {
+  // dsm($form_state);
+}
