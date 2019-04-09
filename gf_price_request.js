@@ -7,7 +7,8 @@
             var currentPrice = priceBox.text();
             $('.gf-price-request', priceForm).click(function() {
                 var percentBox = $(this).prevAll('.current-percent:first');
-                var submitButton = $(this).siblings('input.new-price-submit-button');
+                var submitButton = $(this).siblings('.submit-button-box')
+                    .find('input.new-price-submit-button');
                 percentBox.show();
                 submitButton.removeClass('d-none');
                 submitButton.show();
