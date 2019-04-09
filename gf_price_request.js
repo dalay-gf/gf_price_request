@@ -32,7 +32,6 @@
 
                 percentBox.html(currentPercent + '%');
                 priceBox.text(newPrice);
-                $('input[name="gf_price_request_new_price"]', priceForm).val(newPrice);
                 $('input[name="gf_price_request_percent"]', priceForm).val(currentPercent);
             });
         }
