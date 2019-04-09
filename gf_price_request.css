@@ -23,6 +23,10 @@
 }
 .gf_price_request_form {
     position: relative;
+    -webkit-user-select: none; /* Safari 3.1+ */
+    -moz-user-select: none; /* Firefox 2+ */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Standard syntax */
 }
 .gf_price_request_form .form-item {
     margin: 0;
@@ -37,10 +41,4 @@ input.form-submit.new-price-submit-button {
     top: 10px;
     position: absolute;
     right: 0;
-}
-.gf-price-request {
-    -webkit-user-select: none; /* Safari 3.1+ */
-    -moz-user-select: none; /* Firefox 2+ */
-    -ms-user-select: none; /* IE 10+ */
-    user-select: none; /* Standard syntax */
 }
