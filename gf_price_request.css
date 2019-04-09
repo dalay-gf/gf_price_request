@@ -13,9 +13,20 @@
 .price-value .current-percent {
     color: green;
     font-size: .8rem;
+    line-height: 1;
+    width: 170px;
 }
 .price-value .current-percent.minus {
 }
 .price-value .current-percent.plus {
     text-align: right;
+}
+.gf_price_request_form .form-item {
+    margin: 0;
+}
+input.form-submit.new-price-submit-button {
+    padding: 5px;
+    background: none;
+    line-height: 1;
+    height: auto;
 }

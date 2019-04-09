@@ -7,19 +7,25 @@
             var currentPrice = priceBox.text();
             $('.gf-price-request', priceForm).click(function() {
                 var percentBox = $(this).prevAll('.current-percent:first');
+                var submitButton = $(this).siblings('input.new-price-submit-button');
+                percentBox.show();
+                submitButton.removeClass('d-none');
+                submitButton.show();
 
-                $(this).siblings('input.new-price-submit-button').removeClass('d-none');
                 if ($(this).hasClass('plus')){
                     currentPercent += 1;
                 } else if ($(this).hasClass('minus')) {
                     currentPercent -= 1;
                 }
-                if (currentPercent >=0) {
+                if (currentPercent > 0) {
                     percentBox.removeClass('minus').addClass('plus');
+                } else if (currentPercent === 0) {
+                    percentBox.hide();
+                    submitButton.hide();
                 } else {
                     percentBox.removeClass('plus').addClass('minus');
                 }
-                
+
                 var newPrice = +currentPrice + (currentPrice * (currentPercent / 100));
                 newPrice = Math.round(newPrice)
 

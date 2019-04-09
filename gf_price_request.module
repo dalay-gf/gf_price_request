@@ -32,14 +32,16 @@ function gf_price_request_change_form($form, &$form_state, $node) {
     '#suffix' => '<span class="gf-price-request plus">►</span>',
     '#markup' => '<span class="price-box">' . gf_price_request_get_current_price($node) . '</span>',
   ];
-  // $form['gf_price_request_new_price'] = ['#type' => 'hidden', '#value' => ''];
-  // $form['gf_price_request_percent'] = ['#type' => 'hidden', '#value' => ''];
-  $form['gf_price_request_new_price'] = ['#type' => 'textfield', '#default_value' => ''];
-  $form['gf_price_request_new_price']['#attributes']['class'][] = 'd-none';
-  $form['gf_price_request_percent'] = ['#type' => 'textfield', '#default_value' => ''];
-  $form['gf_price_request_percent']['#attributes']['class'][] = 'd-none';
+
+  $fields = ['gf_price_request_new_price', 'gf_price_request_percent'];
+  foreach ($fields as $field) {
+    $form[$field] = ['#type' => 'textfield', '#default_value' => ''];
+    $form[$field]['#attributes']['class'][] = 'd-none';
+  }
 
   $form['submit'] = [
+    '#prefix' => '<div class="submit-button-box">',
+    '#suffix' => '</div>',
     '#type' => 'submit',
     '#value' => t('Ok'),
     '#attributes' => [
@@ -49,6 +51,7 @@ function gf_price_request_change_form($form, &$form_state, $node) {
       ],
     ],
   ];
+
 
   $path = drupal_get_path('module', 'gf_price_request');
   $form['#attached']['css'][] = $path . '/gf_price_request.css';
