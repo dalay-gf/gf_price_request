@@ -1,7 +1,6 @@
 <?php
 
 function gf_price_request_settings_form($form){
-
   $form['gf_price_request_recipient_addresses'] = array(
     '#type' => 'textfield',
     '#title' => t('Recipient Addresses'),
@@ -19,7 +18,7 @@ function _gf_price_request_multiple_email_validator($element, &$form_state) {
   foreach($emails as $email) {
     $email = trim($email);
     if (!valid_email_address($email)) {
-    form_error($element, t('The "!name" is not valid email.', array('!name' => t($email))));
+      form_error($element, t('The "!mail" is not valid email.', array('!main' => t($email))));
     }
   }
 }

@@ -72,7 +72,6 @@ function gf_price_request_change_form($form, &$form_state, $node) {
     ],
   ];
 
-
   $path = drupal_get_path('module', 'gf_price_request');
   $form['#attached']['css'][] = $path . '/gf_price_request.css';
   $form['#attached']['js'][] = $path . '/gf_price_request.js';
