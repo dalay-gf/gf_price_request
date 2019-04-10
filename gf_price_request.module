@@ -112,7 +112,13 @@ function gf_price_request_change_form_submit($form, &$form_state) {
       'message' => $msg,
     ];
 
-    drupal_mail('system', 'mail', $to, language_default(), ['context' => $mail]);
+    $result = drupal_mail('system', 'mail', $to, language_default(), ['context' => $mail]);
+    if ($result['result']) {
+      drupal_set_message(t('Your request has been successfully sent for processing.'));
+    }
+    else {
+      drupal_set_message(t('Sorry, but your request cannot be processed at this time for technical reasons.'), 'error');
+    }
   }
 }
 
