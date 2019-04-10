@@ -1,6 +1,11 @@
 <?php
 
+/**
+ * Форма настроек модуля.
+ *
+ */
 function gf_price_request_settings_form($form){
+  // Адреса получателей запросов.
   $form['gf_price_request_recipient_addresses'] = array(
     '#type' => 'textfield',
     '#title' => t('Recipient Addresses'),
@@ -13,8 +18,13 @@ function gf_price_request_settings_form($form){
   return system_settings_form($form);
 }
 
+
+/**
+ * Проверка множественных адресов email, заданных строкой через запятую.
+ *
+ */
 function _gf_price_request_multiple_email_validator($element, &$form_state) {
-  $emails = explode(',', $element['#value']);
+  $emails = explode(',', $element['#value']);  // разделитель - запятая
   foreach($emails as $email) {
     $email = trim($email);
     if (!valid_email_address($email)) {

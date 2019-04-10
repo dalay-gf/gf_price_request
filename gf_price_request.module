@@ -16,7 +16,11 @@ function gf_price_request_menu(){
   return $items;
 }
 
+/**
+ * Implements hook_theme().
+ */
 function gf_price_request_theme() {
+  // Регистрируем шаблон для отправляемого письма-запроса.
   return [
     'gf_price_request_mail' => [
       'template' => 'gf_price_request_mail',
@@ -31,13 +35,25 @@ function gf_price_request_theme() {
   ];
 }
 
+/**
+ * Функция-хелпер для получения цены для текущего региона.
+ *
+ * @param stdClass $node
+ * @return int
+ */
 function gf_price_request_get_current_price($node) {
   $region = gf_stock_get_current_region();
   return (int) $node->gf_region_prices[$region];
 }
 
+/**
+ * Implements hook_node_view().
+ */
 function gf_price_request_node_view($node, $view_mode) {
   if ($view_mode == 'full' && uc_product_is_product($node->type)) {
+    // В массив content ноды добавляем новую переменную, содержащую
+    // форму запроса ценны, если у текущего пользователя есть соответствующие
+    // права.
     $form = '';
     if (user_access('price change prequest')){
       $form = drupal_get_form('gf_price_request_change_form', $node);
@@ -46,17 +62,24 @@ function gf_price_request_node_view($node, $view_mode) {
   }
 }
 
+/**
+ * Форма для запроса на изменение цены продукта.
+ *
+ */
 function gf_price_request_change_form($form, &$form_state, $node) {
   $form['#node'] = $node;
   $form['#attributes']['class'][] = 'gf_price_request_form';
 
+  // Поле со значением текущей цены продукта.
   $form['gf_price_request_price'] = [
     '#prefix' => '<div class="current-percent"></div><span class="gf-price-request minus">◄</span>',
     '#suffix' => '<span class="gf-price-request plus">►</span>',
     '#markup' => '<span class="price-box">' . gf_price_request_get_current_price($node) . '</span>',
   ];
 
+  // Поле со значением заданного процента для изменения цены.
   $form['gf_price_request_percent'] = ['#type' => 'textfield', '#default_value' => ''];
+  // Класс d-none - css правило display: none;
   $form['gf_price_request_percent']['#attributes']['class'][] = 'd-none';
 
   $form['submit'] = [
@@ -79,16 +102,27 @@ function gf_price_request_change_form($form, &$form_state, $node) {
   return $form;
 }
 
+/**
+ * Валидация формы запроса на изменение цены.
+ *
+ */
 function gf_price_request_change_form_validate($form, &$form_state) {
   $percent = (int) $form_state['values']['gf_price_request_percent'];
   $to = variable_get('gf_price_request_recipient_addresses', '');
+  // Проверяем, что в настройках модуля заданы получатели запроса.
   if (empty($to)) {
     form_error($form, t('Request failed. In the settings there are no recipients for it.'));
   }
   elseif (100 < $percent || -100 > $percent){
+    // Проверка корректности заданных процентов (не выходят за диапазан -100:100).
     form_error($form, t('The number of percentages is not correct.'));
   }
 }
+
+/**
+ * Действия после отправки запроса на изменение цены.
+ *
+ */
 function gf_price_request_change_form_submit($form, &$form_state) {
   $node = $form['#node'];
   $percent = $form_state['values']['gf_price_request_percent'];
@@ -96,28 +130,24 @@ function gf_price_request_change_form_submit($form, &$form_state) {
   $price = (int) $node->gf_region_prices[$region];
   $new_price = $price + (($price/100) * $percent);
 
-  $to = variable_get('gf_price_request_recipient_addresses', '');
+  $msg = theme('gf_price_request_mail', [
+    'node' => $node,
+    'percent' => $percent,
+    'current_region' => $region,
+    'current_price' => round($price),
+    'new_price' => round($new_price),
+  ]);
+  $mail = [
+    'subject' => t('Request for price change'),
+    'message' => $msg,
+  ];
 
-  if ($to) {
-    $msg = theme('gf_price_request_mail', [
-      'node' => $node,
-      'percent' => $percent,
-      'current_region' => $region,
-      'current_price' => round($price),
-      'new_price' => round($new_price),
-    ]);
-    $mail = [
-      'subject' => t('Request for price change'),
-      'message' => $msg,
-    ];
-
-    $result = drupal_mail('system', 'mail', $to, language_default(), ['context' => $mail]);
-    if ($result['result']) {
-      drupal_set_message(t('Your request has been successfully sent for processing.'));
-    }
-    else {
-      drupal_set_message(t('Sorry, but your request cannot be processed at this time for technical reasons.'), 'error');
-    }
+  $result = drupal_mail('system', 'mail', $to, language_default(), ['context' => $mail]);
+  if ($result['result']) {
+    drupal_set_message(t('Your request has been successfully sent for processing.'));
+  }
+  else {
+    drupal_set_message(t('Sorry, but your request cannot be processed at this time for technical reasons.'), 'error');
   }
 }
 
