@@ -82,7 +82,11 @@ function gf_price_request_change_form($form, &$form_state, $node) {
 
 function gf_price_request_change_form_validate($form, &$form_state) {
   $percent = (int) $form_state['values']['gf_price_request_percent'];
-  if (100 < $percent || -100 > $percent){
+  $to = variable_get('gf_price_request_recipient_addresses', '');
+  if (empty($to)) {
+    form_error($form, t('Request failed. In the settings there are no recipients for it.'));
+  }
+  elseif (100 < $percent || -100 > $percent){
     form_error($form, t('The number of percentages is not correct.'));
   }
 }
@@ -93,18 +97,16 @@ function gf_price_request_change_form_submit($form, &$form_state) {
   $price = (int) $node->gf_region_prices[$region];
   $new_price = $price + (($price/100) * $percent);
 
-  $msg = theme('gf_price_request_mail', [
-    'node' => $node,
-    'percent' => $percent,
-    'current_region' => $region,
-    'current_price' => round($price),
-    'new_price' => round($new_price),
-  ]);
-
-
   $to = variable_get('gf_price_request_recipient_addresses', '');
 
   if ($to) {
+    $msg = theme('gf_price_request_mail', [
+      'node' => $node,
+      'percent' => $percent,
+      'current_region' => $region,
+      'current_price' => round($price),
+      'new_price' => round($new_price),
+    ]);
     $mail = [
       'subject' => t('Request for price change'),
       'message' => $msg,
