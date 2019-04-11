@@ -142,6 +142,8 @@ function gf_price_request_change_form_submit($form, &$form_state) {
     'message' => $msg,
   ];
 
+  $to = variable_get('gf_price_request_recipient_addresses', '');
+
   $result = drupal_mail('system', 'mail', $to, language_default(), ['context' => $mail]);
   if ($result['result']) {
     drupal_set_message(t('Your request has been successfully sent for processing.'));
